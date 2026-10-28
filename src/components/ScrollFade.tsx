@@ -19,7 +19,6 @@ const TARGETS = [
   "main .stat",
   "main .timeline-item",
   "main .work-skip",
-  "main .stack-group",
   "main .contact-actions",
 ].join(", ");
 const FADE_PX = 70; // fading starts when a block's top is this far below the nav bar
@@ -34,9 +33,10 @@ export default function ScrollFade() {
     const collect = () => {
       const all = Array.from(document.querySelectorAll<HTMLElement>(TARGETS));
       // Fade each block once: skip anything inside another faded block, and the pinned
-      // project ring (it manages its own fading).
+      // project ring and stack cylinder (they manage their own fading).
       els = all.filter(
-        (el) => !el.closest(".work-sticky") && !all.some((other) => other !== el && other.contains(el)),
+        (el) =>
+          !el.closest(".work-sticky, .stack-stage") && !all.some((other) => other !== el && other.contains(el)),
       );
     };
 

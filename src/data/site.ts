@@ -8,10 +8,10 @@ export const site = {
   role: "Full Stack Developer & AI Engineer",
   description:
     "Ryanveer Singh is a full stack developer and AI engineer building fast, reliable web products and AI-powered software.",
-  email: "hello@example.com", // TODO: your email address
+  email: "ryanchd35@gmail.com",
   socials: [
-    { label: "GitHub", href: "https://github.com/" }, // TODO: your GitHub profile
-    { label: "LinkedIn", href: "https://www.linkedin.com/" }, // TODO: your LinkedIn profile
+    { label: "GitHub", href: "https://github.com/RyanveerSingh" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/ryanveer-singh-554698336" },
   ],
 
   hero: {
@@ -41,49 +41,118 @@ export const site = {
     },
   ],
 
-  // TODO: adjust to the tools you actually use.
+  // Tech stack, one card per group on the rotating cylinder. `icon` is a logo file in
+  // public/stack/ (from Simple Icons); leave it out for a text-only pill.
   stack: [
-    { group: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"] },
-    { group: "Backend", items: ["Node.js", "Python", "FastAPI", "PostgreSQL", "REST & GraphQL"] },
-    { group: "AI / ML", items: ["LLM APIs", "RAG", "AI agents", "Vector databases", "PyTorch"] },
-    { group: "Cloud & tools", items: ["Docker", "AWS", "Vercel", "Git", "CI/CD"] },
+    {
+      group: "Languages",
+      items: [
+        { name: "TypeScript", icon: "typescript" },
+        { name: "JavaScript", icon: "javascript" },
+        { name: "Python", icon: "python" },
+        { name: "Java", icon: "openjdk" },
+        { name: "C++", icon: "cplusplus" },
+        { name: "C", icon: "c" },
+        { name: "SQL" },
+      ],
+    },
+    {
+      group: "Frontend",
+      items: [
+        { name: "React", icon: "react" },
+        { name: "Next.js", icon: "nextdotjs" },
+        { name: "Tailwind CSS", icon: "tailwindcss" },
+        { name: "Redux / Zustand", icon: "redux" },
+        { name: "Framer Motion", icon: "framer" },
+        { name: "HTML & CSS", icon: "html5" },
+      ],
+    },
+    {
+      group: "Backend",
+      items: [
+        { name: "Node.js", icon: "nodedotjs" },
+        { name: "Express", icon: "express" },
+        { name: "Spring Boot", icon: "springboot" },
+        { name: "FastAPI", icon: "fastapi" },
+        { name: "JWT auth", icon: "jsonwebtokens" },
+        { name: "REST APIs" },
+      ],
+    },
+    {
+      group: "Databases",
+      items: [
+        { name: "PostgreSQL", icon: "postgresql" },
+        { name: "MySQL", icon: "mysql" },
+        { name: "MongoDB", icon: "mongodb" },
+        { name: "Supabase", icon: "supabase" },
+        { name: "Prisma", icon: "prisma" },
+        { name: "Hibernate / JPA", icon: "hibernate" },
+      ],
+    },
+    {
+      group: "AI / ML",
+      items: [
+        { name: "Claude API", icon: "anthropic" },
+        { name: "Gemini API", icon: "googlegemini" },
+        { name: "LangChain / LangGraph", icon: "langchain" },
+        { name: "PyTorch", icon: "pytorch" },
+        { name: "Hugging Face", icon: "huggingface" },
+        { name: "RAG" },
+      ],
+    },
+    {
+      group: "DevOps & Testing",
+      items: [
+        { name: "Docker", icon: "docker" },
+        { name: "AWS (EC2, S3)", icon: "amazonwebservices" },
+        { name: "GitHub Actions", icon: "githubactions" },
+        { name: "Vercel", icon: "vercel" },
+        { name: "Git", icon: "git" },
+        { name: "Jest", icon: "jest" },
+        { name: "JUnit 5", icon: "junit5" },
+        { name: "Playwright" },
+      ],
+    },
   ],
 
-  // TODO: placeholders — replace with your real numbers and achievements.
   stats: [
-    { value: "8+", label: "Projects shipped" },
-    { value: "3+", label: "Years building" },
-    { value: "4", label: "AI products" },
+    { value: "8", label: "Projects built" },
+    { value: "1st", label: "of 82 teams at CyberthonAI" },
+    { value: "2×", label: "IPD Expo winner" },
   ],
   achievements: [
     {
-      year: "2026",
-      title: "Hackathon win (example)",
-      text: "Replace with the event, your placing and what you built in one line.",
+      year: "2025",
+      title: "CyberthonAI — National Hackathon Winner",
+      subtitle: "1st Place out of 82 Teams",
+      text: "Won CyberthonAI, a national-level hackathon organized by Infosys in collaboration with PEC-CRC and Chandigarh Police. Secured 1st place competing against 82 teams from across the country.",
     },
     {
       year: "2025",
-      title: "Open-source contribution (example)",
-      text: "Replace with the project you contributed to and the impact of your change.",
+      title: "Full Stack Intern — DRDO, Jodhpur",
+      subtitle: "Defence Research & Development Organisation",
+      text: "Completed a one-month remote internship as a Full Stack Developer at DRDO Jodhpur, working on internal tools and web applications for defence research operations.",
     },
     {
-      year: "2025",
-      title: "Product milestone (example)",
-      text: "Replace with a launch, a user count, a revenue figure or another result you're proud of.",
+      year: "2024 – 2025",
+      title: "IPD Expo Winner — 2024 & 2025",
+      subtitle: "CCET, Sector 26, Chandigarh",
+      text: "Won the IPD Expo consecutively in 2024 and 2025 at Chandigarh College of Engineering & Technology (CCET), Sector 26, Chandigarh.",
     },
     {
-      year: "2024",
-      title: "Recognition (example)",
-      text: "Replace with an award, a scholarship, a talk you gave or an article you wrote.",
+      year: "2023 – Present",
+      title: "B.Tech — Computer Science & Engineering",
+      subtitle: "4th Year • Undergraduate",
+      text: "Building a strong foundation in C, C++, JavaScript, and Python. Continuously improving skills in Data Structures & Algorithms while diving into full-stack development with Next.js and the MERN stack.",
     },
   ],
 
-  // TODO: placeholders — replace with your real certificates and their links.
+  // Add an `href` to a certificate to make its card link to the credential.
   certificates: [
-    { title: "Cloud certificate (example)", issuer: "Issuer name", year: "2026", href: "#" },
-    { title: "AI / ML certificate (example)", issuer: "Issuer name", year: "2025", href: "#" },
-    { title: "Web development certificate (example)", issuer: "Issuer name", year: "2025", href: "#" },
-    { title: "Data certificate (example)", issuer: "Issuer name", year: "2024", href: "#" },
+    { title: "Data Analytics Job Simulation", issuer: "Deloitte · Forage", year: "Nov 2025", href: "" },
+    { title: "Software Engineering Job Simulation", issuer: "JPMorgan Chase & Co. · Forage", year: "Nov 2025", href: "" },
+    { title: "CyberthonAI Hackathon", issuer: "National Level AI Hackathon", year: "2025", href: "" },
+    { title: "DRDO Internship", issuer: "Defence Research & Development Organisation", year: "2025", href: "" },
   ],
 
   // Projects, in display order. `mark` is the big monogram on the card's cover, `hue`

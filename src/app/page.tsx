@@ -6,6 +6,7 @@ import ProjectOrbit from "@/components/ProjectOrbit";
 import Reveal from "@/components/Reveal";
 import ScrollFade from "@/components/ScrollFade";
 import SmoothCursor from "@/components/SmoothCursor";
+import StackCylinder from "@/components/StackCylinder";
 import { site } from "@/data/site";
 
 // A project card in the at-a-glance grid: opens the GitHub repo in a new tab, or is a
@@ -47,32 +48,33 @@ function GlanceCard({ project }: { project: (typeof site.projects)[number] }) {
   );
 }
 
-function StackSection() {
-  return (
-    <section id="stack" className="section section--raised">
-      <div className="container">
-        <Reveal>
-          <p className="section-label">Tech Stack</p>
-          <h2 className="section-title">The tools I build with.</h2>
-        </Reveal>
-        <div className="stack-grid">
-          {site.stack.map((group, i) => (
-            <Reveal key={group.group} delay={i * 80} className="stack-group">
-              <h3>{group.group}</h3>
-              <ul className="pills">
-                {group.items.map((item) => (
-                  <li key={item} className="pill">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
+// A certificate card: links to the credential when there is one.
+function CertCard({ cert }: { cert: (typeof site.certificates)[number] }) {
+  const body = (
+    <>
+      <span className="cert-seal" aria-hidden="true">
+        ✦
+      </span>
+      <h3>{cert.title}</h3>
+      <p>
+        {cert.issuer} · {cert.year}
+      </p>
+      {cert.href && (
+        <span className="cert-link">
+          View credential <span aria-hidden="true">↗</span>
+        </span>
+      )}
+    </>
+  );
+  return cert.href ? (
+    <a href={cert.href} className="cert" target="_blank" rel="noreferrer">
+      {body}
+    </a>
+  ) : (
+    <div className="cert">{body}</div>
   );
 }
+
 
 export default function Home() {
   const [first, ...rest] = site.name.split(" ");
@@ -165,7 +167,7 @@ export default function Home() {
           </div>
         </section>
 
-        <StackSection />
+        <StackCylinder />
 
         <section id="achievements" className="section section--solid">
           <div className="container">
@@ -200,6 +202,7 @@ export default function Home() {
                     <span className="timeline-year">{item.year}</span>
                     <div>
                       <h3>{item.title}</h3>
+                      <p className="timeline-sub">{item.subtitle}</p>
                       <p>{item.text}</p>
                     </div>
                   </Reveal>
@@ -218,18 +221,7 @@ export default function Home() {
             <div className="certs">
               {site.certificates.map((cert, i) => (
                 <Reveal key={cert.title} delay={i * 80}>
-                  <a href={cert.href} className="cert">
-                    <span className="cert-seal" aria-hidden="true">
-                      ✦
-                    </span>
-                    <h3>{cert.title}</h3>
-                    <p>
-                      {cert.issuer} · {cert.year}
-                    </p>
-                    <span className="cert-link">
-                      View credential <span aria-hidden="true">↗</span>
-                    </span>
-                  </a>
+                  <CertCard cert={cert} />
                 </Reveal>
               ))}
             </div>

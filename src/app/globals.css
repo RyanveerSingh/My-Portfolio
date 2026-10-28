@@ -845,22 +845,6 @@ main,
   color: var(--muted);
 }
 
-/* Stack */
-
-.stack-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px 28px;
-  margin-top: clamp(48px, 7vw, 80px);
-}
-
-.stack-group h3 {
-  font-size: 1.1rem;
-  padding-bottom: 1rem;
-  margin-bottom: 1.1rem;
-  border-bottom: 1px solid var(--line);
-}
-
 .pills {
   display: flex;
   flex-wrap: wrap;
@@ -899,14 +883,17 @@ main,
 .work-intro {
   position: absolute;
   left: var(--gutter);
-  top: 96px;
+  top: clamp(80px, 13vh, 96px); /* never under the nav bar */
   z-index: 200;
-  max-width: min(26vw, 380px);
+  width: max(26vw, 300px);
+  max-width: 380px;
 }
 
+/* Scales with the screen's height too, so on short or zoomed-in windows the heading
+   stays compact and leaves room for the project ring below it. */
 .work-title {
   margin-top: 0.9rem;
-  font-size: clamp(2rem, 3.4vw, 3.4rem);
+  font-size: clamp(1.6rem, min(3.4vw, 7vh), 3.4rem);
   line-height: 1;
   font-weight: 700;
 }
@@ -917,6 +904,8 @@ main,
 }
 
 .work-skip {
+  display: inline-block;
+  white-space: nowrap;
   align-self: flex-start;
   margin-top: 1.4rem;
   padding: 0.55rem 1rem;
@@ -931,6 +920,138 @@ main,
   background: #f4b65a;
   color: var(--bg);
   transform: translateY(-2px);
+}
+
+/* ---------- Tech stack cylinder ---------- */
+
+/* Pinned for one screen plus ~0.55 screens per category while the cylinder turns. */
+.stack-pin {
+  position: relative;
+  z-index: 1;
+  height: calc(100vh + (var(--n) - 1) * 55vh);
+  border-block: 1px solid var(--line);
+}
+
+.stack-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+  padding: clamp(84px, 11vh, 110px) var(--gutter) 24px;
+  overflow: hidden;
+}
+
+.stack-head {
+  max-width: var(--max);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.stack-head .section-title {
+  font-size: clamp(2rem, min(4.4vw, 7vh), 3.8rem);
+}
+
+/* The 3D scene: --card-w sets the card size, --radius places 6 cards edge to edge. */
+.stack-scene {
+  --card-w: clamp(260px, 30vw, 460px);
+  --radius: calc(var(--card-w) * 0.95);
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+}
+
+.stack-drum {
+  position: relative;
+  width: var(--card-w);
+  height: min(46vh, 300px);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.stack-card {
+  --lit: 0;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 20px;
+  border: 1px solid rgba(244, 182, 90, calc(0.15 + var(--lit) * 0.45));
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(244, 182, 90, calc(var(--lit) * 0.16)), transparent 60%),
+    linear-gradient(160deg, #1c1114, #0b0608 70%);
+  box-shadow: 0 0 calc(var(--lit) * 40px) rgba(244, 182, 90, calc(var(--lit) * 0.25));
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.stack-card-index {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: rgba(244, 182, 90, 0.85);
+}
+
+.stack-card h3 {
+  margin-top: 0.4rem;
+  font-size: clamp(1.4rem, 2.1vw, 2rem);
+}
+
+.stack-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 9px;
+  margin-top: 1.1rem;
+}
+
+.stack-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 238, 232, 0.04);
+  font-size: clamp(0.82rem, 0.95vw, 0.98rem);
+  color: rgba(244, 236, 228, 0.92);
+}
+
+/* Logos are drawn as masks so they all take the site's off-white colour. */
+.stack-logo {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  background: #f4ece4;
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
+}
+
+.stack-hint {
+  text-align: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(244, 236, 228, 0.55);
+}
+
+@media (max-width: 720px) {
+  .stack-scene {
+    --card-w: 72vw;
+    perspective: 900px;
+  }
+
+  .stack-drum {
+    height: min(58vh, 440px);
+  }
 }
 
 /* ---------- Project ring around the avatar ---------- */
@@ -974,13 +1095,13 @@ main,
   top: 0;
   width: clamp(230px, 21vw, 330px);
   opacity: 0;
-  border: 1px solid rgba(140, 225, 255, 0.45);
+  border: 1px solid rgba(244, 182, 90, 0.4);
   border-radius: 16px;
-  background: linear-gradient(160deg, rgb(22, 36, 58), rgb(9, 14, 27));
+  background: linear-gradient(160deg, #1c1114, #0b0608 60%);
   box-shadow:
-    0 0 24px rgba(140, 225, 255, 0.28),
+    0 0 24px rgba(244, 182, 90, 0.22),
     0 18px 40px rgba(0, 0, 0, 0.45);
-  color: #eaf6ff;
+  color: var(--text);
   overflow: hidden;
   will-change: transform, opacity;
   pointer-events: none;
@@ -992,7 +1113,7 @@ main,
   place-items: center;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border-bottom: 1px solid rgba(140, 225, 255, 0.25);
+  border-bottom: 1px solid rgba(244, 182, 90, 0.22);
   background:
     radial-gradient(circle at 28% 22%, hsl(var(--hue) 75% 50% / 0.85), transparent 60%),
     radial-gradient(circle at 80% 90%, hsl(calc(var(--hue) + 40) 60% 32% / 0.7), transparent 55%),
@@ -1015,7 +1136,7 @@ main,
   font-size: 0.66rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(140, 225, 255, 0.8);
+  color: rgba(244, 182, 90, 0.9);
 }
 
 .orbit-title {
@@ -1035,7 +1156,7 @@ main,
   margin-top: 0.45rem;
   font-size: 0.84rem;
   line-height: 1.5;
-  color: rgba(234, 246, 255, 0.8);
+  color: rgba(244, 236, 228, 0.78);
 }
 
 .orbit-link {
@@ -1043,11 +1164,11 @@ main,
   margin-top: 0.6rem;
   font-size: 0.86rem;
   font-weight: 600;
-  color: rgb(140, 225, 255);
+  color: #f4b65a;
 }
 
 .orbit-link--locked {
-  color: rgba(234, 246, 255, 0.55);
+  color: rgba(244, 236, 228, 0.55);
   font-weight: 500;
 }
 
@@ -1246,6 +1367,24 @@ main,
   font-size: 1.25rem;
 }
 
+.timeline-item .timeline-sub {
+  margin-top: 0.2rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: #f4b65a;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0;
+}
+
+/* Wider year column so ranges like "2023 – Present" fit on one line. */
+.timeline-item {
+  grid-template-columns: 130px 1fr;
+}
+
 .timeline-item p {
   margin-top: 0.35rem;
   color: var(--muted);
@@ -1437,10 +1576,6 @@ main,
     max-width: 34rem;
   }
 
-  .stack-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   /* On narrow screens the figure fills the frame, so text sits at the bottom. */
   .hero {
     align-items: flex-end;
@@ -1497,10 +1632,6 @@ main,
     min-height: 42px;
     padding: 0 1.1rem;
     font-size: 0.95rem;
-  }
-
-  .stack-grid {
-    grid-template-columns: 1fr;
   }
 
   .footer {
