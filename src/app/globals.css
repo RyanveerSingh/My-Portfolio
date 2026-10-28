@@ -1693,3 +1693,13 @@ main,
     animation: none;
   }
 }
+
+/* Phones and other touch devices: drop the effects that cost the most there. The grain
+   overlay is blended over the playing video (a full-screen re-blend every frame); the
+   video already has the grain baked in. The embers canvas is switched off in Embers.tsx. */
+@media (pointer: coarse) {
+  .magic::before,
+  .embers {
+    display: none;
+  }
+}

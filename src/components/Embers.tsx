@@ -27,6 +27,9 @@ export default function Embers() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Off on phones and other touch devices: a full-screen canvas redrawn every frame
+    // competes with the video and the scroll animations there.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

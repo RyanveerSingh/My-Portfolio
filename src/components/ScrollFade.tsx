@@ -26,6 +26,9 @@ const MAX_FADE_PX = 120; // ...or up to this far for tall blocks
 
 export default function ScrollFade() {
   useEffect(() => {
+    // Off on phones and other touch devices: measuring dozens of blocks on every scroll
+    // frame is too heavy there, and the nav bar is solid behind content anyway.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const nav = document.querySelector<HTMLElement>(".nav");
     let els: HTMLElement[] = [];
     let raf = 0;

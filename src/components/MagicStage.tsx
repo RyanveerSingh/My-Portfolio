@@ -173,9 +173,11 @@ export default function MagicStage() {
       start(player);
     };
 
+    // Phones and other touch devices get lighter 720p clips (cheaper to decode).
+    const quality = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 720 ? "720" : "1080";
     Object.entries(players).forEach(([key, p]) => {
       p.muted = true; // autoplay needs muted, which React doesn't always set as an attribute
-      p.src = `/video/magic/1080/${key.split("#")[0]}.mp4`;
+      p.src = `/video/magic/${quality}/${key.split("#")[0]}.mp4`;
     });
     player.classList.add("is-on");
     start(player);
