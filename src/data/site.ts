@@ -11,7 +11,7 @@ export const site = {
   email: "ryanchd35@gmail.com",
   socials: [
     { label: "GitHub", href: "https://github.com/RyanveerSingh" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/ryanveer-singh-554698336" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/ryanveer-singh-554b98336" },
   ],
 
   hero: {

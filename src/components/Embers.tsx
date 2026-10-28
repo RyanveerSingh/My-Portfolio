@@ -67,11 +67,14 @@ export default function Embers() {
     const resize = () => {
       w = window.innerWidth;
       h = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // Phones: a lighter canvas (1x pixels, fewer embers) so it doesn't compete with the
+      // video and scroll animations.
+      const phone = w < 720;
+      const dpr = phone ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(MAX_EMBERS, Math.round(w * h * DENSITY));
+      const count = Math.min(phone ? 22 : MAX_EMBERS, Math.round(w * h * DENSITY));
       while (embers.length < count) embers.push(spawn(true));
       embers.length = count;
     };

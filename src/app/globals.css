@@ -974,6 +974,8 @@ main,
   will-change: transform;
 }
 
+/* The card itself never changes while turning; only its glow layer (::before) fades in
+   as it faces front, which the graphics chip does without repainting. */
 .stack-card {
   --lit: 0;
   position: absolute;
@@ -981,15 +983,28 @@ main,
   display: flex;
   flex-direction: column;
   padding: 22px 22px 20px;
-  border: 1px solid rgba(244, 182, 90, calc(0.15 + var(--lit) * 0.45));
+  border: 1px solid rgba(244, 182, 90, 0.15);
   border-radius: 18px;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(244, 182, 90, calc(var(--lit) * 0.16)), transparent 60%),
-    linear-gradient(160deg, #1c1114, #0b0608 70%);
-  box-shadow: 0 0 calc(var(--lit) * 40px) rgba(244, 182, 90, calc(var(--lit) * 0.25));
+  background: linear-gradient(160deg, #1c1114, #0b0608 70%);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  overflow: hidden;
+}
+
+.stack-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(244, 182, 90, 0.6);
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0%, rgba(244, 182, 90, 0.16), transparent 60%);
+  box-shadow: 0 0 40px rgba(244, 182, 90, 0.25);
+  opacity: var(--lit);
+  will-change: opacity;
+  pointer-events: none;
+}
+
+.stack-card > * {
+  position: relative; /* above the glow layer */
 }
 
 .stack-card-index {
@@ -1049,6 +1064,11 @@ main,
     perspective: 900px;
   }
 
+  /* Phones: border and tint only, no blurred outer glow. */
+  .stack-card::before {
+    box-shadow: none;
+  }
+
   .stack-drum {
     height: min(58vh, 440px);
   }
@@ -1079,9 +1099,9 @@ main,
 
 @media (max-aspect-ratio: 1/1) {
   .orbit-layer--back {
-    -webkit-mask-size: max(100vw, 177.78vh) auto, 100% 100%;
+    -webkit-mask-size: 200vw auto, 100% 100%;
     -webkit-mask-position: center, 0 0;
-    mask-size: max(100vw, 177.78vh) auto, 100% 100%;
+    mask-size: 200vw auto, 100% 100%;
     mask-position: center, 0 0;
   }
 }
@@ -1145,11 +1165,10 @@ main,
   line-height: 1.2;
 }
 
-/* Details unfold only on the card at the front. */
+/* Details are always laid out (so a card's size never changes while the ring turns,
+   which would re-lay-out the page every frame) and just brighten on the front card. */
 .orbit-more {
-  max-height: calc(var(--focus) * 14rem);
-  opacity: var(--focus);
-  overflow: hidden;
+  opacity: calc(0.45 + var(--focus) * 0.55);
 }
 
 .orbit-text {
@@ -1173,8 +1192,16 @@ main,
 }
 
 @media (max-width: 720px) {
+  /* Phones: no blurred glow (re-drawn as the cards scale) and no silhouette mask on the
+     back layer (cards there are already faded out), to keep scrolling smooth. */
   .orbit-card {
     width: 60vw;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  }
+
+  .orbit-layer--back {
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .work-intro {
@@ -1603,13 +1630,29 @@ main,
 }
 
 /* Portrait screens (phones): the frame fills the screen so the avatar stays big. */
+/* Portrait screens (phones): twice the screen's width, so the avatar stays big and the
+   whole spell fits across the screen; centred vertically, fading at top and bottom.
+   ProjectOrbit and .orbit-layer--back assume this size and position. */
 @media (max-aspect-ratio: 1/1) {
   .magic-frame {
     top: 50%;
     bottom: auto;
-    width: max(100vw, 177.78vh);
-    height: max(100vh, 56.25vw);
+    width: 200vw;
+    height: 112.5vw;
     transform: translate(-50%, -50%);
+    /* No mask here: masking a playing video is expensive on phones. A plain gradient in
+       the stage's own colours fades the frame's top and bottom edges instead. */
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .magic-frame::after {
+    content: "";
+    position: absolute;
+    inset: -1px 0;
+    z-index: 1000000; /* above every video player */
+    background: linear-gradient(to bottom, #501017, rgba(80, 16, 23, 0) 12%, rgba(83, 19, 21, 0) 82%, #531315);
+    pointer-events: none;
   }
 }
 

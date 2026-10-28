@@ -42,9 +42,12 @@ export default function ScrollFade() {
 
     const update = () => {
       raf = 0;
+      // Read every position first, then write, so the browser lays the page out once
+      // per frame instead of once per element (the main cause of lag on phones).
       const line = nav ? nav.getBoundingClientRect().bottom : 0;
-      for (const el of els) {
-        const r = el.getBoundingClientRect();
+      const rects = els.map((el) => el.getBoundingClientRect());
+      els.forEach((el, i) => {
+        const r = rects[i];
         // 0 while the block is well below the bar; 1 (fully gone) once its top reaches
         // the bar. Taller blocks start fading a little earlier, but never more than
         // MAX_FADE_PX before it, so anything comfortably on screen stays crisp.
@@ -56,12 +59,12 @@ export default function ScrollFade() {
             el.style.transition = "";
             delete el.dataset.fading;
           }
-          continue;
+          return;
         }
         el.dataset.fading = "1";
         el.style.transition = "none"; // follow the scroll exactly (overrides reveal transitions)
         el.style.opacity = String(Math.max(0, 1 - p));
-      }
+      });
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);

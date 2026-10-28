@@ -35,22 +35,49 @@ export default function Nav() {
     const sections = Object.keys(SECTION_TAB)
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => !!el);
-    const onScroll = () => {
-      setSolid(!stageEnd || stageEnd.getBoundingClientRect().bottom <= 80);
+    // Section positions are measured once (and on resize), so scrolling only compares
+    // numbers instead of asking the browser for layout on every scroll event.
+    let tops: { id: string; top: number }[] = [];
+    let stageEndBottom = 0;
+    const measure = () => {
+      tops = sections.map((s) => ({ id: s.id, top: s.getBoundingClientRect().top + window.scrollY }));
+      stageEndBottom = stageEnd ? stageEnd.getBoundingClientRect().bottom + window.scrollY : 0;
+    };
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      setSolid(!stageEnd || stageEndBottom - y <= 80);
       // The current section is the last one whose top has passed 40% of the screen.
-      const line = window.innerHeight * 0.4;
-      let current = sections[0]?.id ?? "top";
-      for (const s of sections) if (s.getBoundingClientRect().top <= line) current = s.id;
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = "contact";
+      const line = y + window.innerHeight * 0.4;
+      let current = tops[0]?.id ?? "top";
+      for (const t of tops) if (t.top <= line) current = t.id;
+      if (window.innerHeight + y >= document.documentElement.scrollHeight - 4) current = "contact";
       setActive(SECTION_TAB[current]);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    const onResize = () => {
+      measure();
+      onScroll();
     };
     // The page transition covers the screen, jumps, then fires this: close the menu then.
     const onCovered = () => setMenuOpen(false);
-    onScroll();
+    measure();
+    update();
+    // Fonts and images can shift section positions just after load: measure again.
+    const late = window.setTimeout(onResize, 1500);
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    window.addEventListener("load", onResize);
     window.addEventListener("bubble:covered", onCovered);
     return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(late);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("load", onResize);
       window.removeEventListener("bubble:covered", onCovered);
     };
   }, []);

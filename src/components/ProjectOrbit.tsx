@@ -42,6 +42,8 @@ export default function ProjectOrbit() {
     let from = 0;
     let animStart = 0;
     let raf = 0;
+    const lastFocus: number[] = [];
+    const lastH: number[] = [];
 
     const progress = () => {
       // s = how many projects have come round (0 … N), from the scroll position.
@@ -61,22 +63,24 @@ export default function ProjectOrbit() {
       }
       const w = root.clientWidth;
       const h = root.clientHeight;
-      // The video frame: 16:9, as wide as fits, standing on the bottom edge (see .magic-frame).
+      // The video frame (see .magic-frame): 16:9 as wide as fits, on the bottom edge; on
+      // portrait screens twice the screen's width, centred vertically.
       const portrait = w <= h;
-      const fw = portrait ? Math.max(w, (h * 16) / 9) : Math.min(w, (h * 16) / 9);
+      const fw = portrait ? 2 * w : Math.min(w, (h * 16) / 9);
       const fh = (fw * 9) / 16;
       const fx = (w - fw) / 2;
       const fy = portrait ? (h - fh) / 2 : h - fh;
       const cx = fx + fw / 2;
+      const narrow = w < 720;
       const s = progress();
       const grow = b >= 1 ? 1 : b <= 0 ? 0 : target === 1 ? easeOutBack(b) : b;
 
       // The ring (as drawn): centred on his face, wide and tilted. Its back passes
       // behind the turban at forehead height, its sides are level with his mouth, its
-      // front crosses his collar.
+      // front crosses his collar. On phones it's kept within the screen's width.
       const rcx = cx;
       const rcy = fy + fh * 0.485;
-      const rx = fw * 0.33;
+      const rx = narrow ? Math.min(fw * 0.33, w * 0.4) : fw * 0.33;
       const ry = fh * 0.235;
 
       // Pass 1: where each card sits on the ring. p = 0 is in front of him, +1 on his right
@@ -88,8 +92,11 @@ export default function ProjectOrbit() {
         const depth = (Math.cos(rad) + 1) / 2; // 1 front … 0 back
         const x = rcx + rx * Math.sin(rad);
         const y = rcy + ry * Math.cos(rad);
-        const scale = 0.5 + 0.38 * depth ** 1.3; // front 0.88, sides about 0.65
-        const opacity = 1 - clamp01((Math.abs(a) - 100) / 45); // solid at the sides, gone behind his head
+        // Front 0.88; sides about 0.65 (0.5 on phones, so all three fit across the screen).
+        const scale = narrow ? 0.36 + 0.52 * depth ** 2 : 0.5 + 0.38 * depth ** 1.3;
+        // Solid at the sides, gone behind his head (sooner on phones, where the back layer
+        // isn't masked by his silhouette).
+        const opacity = narrow ? 1 - clamp01((Math.abs(a) - 92) / 20) : 1 - clamp01((Math.abs(a) - 100) / 45);
         const z = Math.round(depth * 100);
         const focus = clamp01(1 - Math.abs(p) / 0.6);
         const behind = Math.abs(a) > 95; // round the back: he covers it
@@ -135,10 +142,17 @@ export default function ProjectOrbit() {
         el.style.setProperty("--focus", focus.toFixed(3));
         el.style.pointerEvents = focus > 0.5 && b >= 1 ? "auto" : "none";
       });
-      // A card's details unfold as it reaches the front, changing its height: fit again
-      // with the new size.
-      const resized = cards.some((el, i) => el && Math.abs(el.offsetHeight - layout[i].h) > 1);
-      if (b !== target || resized) raf = requestAnimationFrame(render);
+      // A card's details unfold as it reaches the front, changing its height. Rather than
+      // measuring again now (which would force a second layout this frame), fit again
+      // next frame whenever the unfolding changed or a card's size differs from last time.
+      const changed = layout.some(
+        (c, i) => Math.abs(c.focus - (lastFocus[i] ?? -1)) > 0.001 || Math.abs(c.h - (lastH[i] ?? -1)) > 1,
+      );
+      layout.forEach((c, i) => {
+        lastFocus[i] = c.focus;
+        lastH[i] = c.h;
+      });
+      if (b !== target || changed) raf = requestAnimationFrame(render);
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(render);
